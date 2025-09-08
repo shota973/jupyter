@@ -4,12 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app
-    working_dir: /src
+    working_dir: /app
     volumes:
       - .:/app:delegated            # ローカルソース
       - uv_cache:/root/.cache/uv    # uv キャッシュ
     # 初回起動でpyproject.pyが存在しない(uv initが実行されていない時)uv initを実行、その後アプリを実行。
-    command: tail -f /dev/null 
+    command: jupyter lab --config="/app/jupyter_lab_config.py"
     # 例: API を公開したい場合
     ports:
       - "8000:8000"
