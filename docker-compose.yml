@@ -1,15 +1,23 @@
 services:
   app:
+    # 使用するimageにDockerfileで作成されるimageを指定
     build:
       context: .
       dockerfile: Dockerfile
     container_name: app
+    # ローカルのファイルのコピー先である/appを作業ディレクトリに指定
     working_dir: /app
+    # /appディレクトリの変更をlocalのコピー元に反映
+    # jupyterで保存したチェックポイントを次回起動時にも利用できるように
     volumes:
-      - .:/app:delegated            # ローカルソース
-    # 初回起動でpyproject.pyが存在しない(uv initが実行されていない時)uv initを実行、その後アプリを実行。
+      - .:/app:delegated
+      - ipynb_checkpoints:/root/ipynb_checkpoints
+    # jupyter labを jupyter_lab_config.py に記載した設定で起動
     command: jupyter lab --config="/app/jupyter_lab_config.py"
-    # 例: API を公開したい場合
+    # このコンテナのPC上でのport, docker内部のportをそれぞれ8000に設定
     ports:
       - "8000:8000"
     restart: no
+
+volumes:
+  ipynb_checkpoints:
